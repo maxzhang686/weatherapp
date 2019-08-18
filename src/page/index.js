@@ -86,7 +86,7 @@ handleChange = event => {
                     >
                       <option value="Sydney">Sydney</option>
                       <option value="Tokyo">Tokyo</option>
-                      <option value="Pairs">Beijing</option>
+                      <option value="Beijing">Beijing</option>
                     </select>
                   </div>
             
