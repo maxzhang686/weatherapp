@@ -95,7 +95,17 @@ handleChange = event => {
           
         <Buttompart>
         
-        {data&&data.forecast.forecastday.map((day, id) => (
+        {data&&data.forecast.forecastday.map((day1,id) => {
+          return <WeeksDetail
+                  key={id}
+                  date={day1.date}
+                  icon={day1.day.condition.icon} 
+                  temp={day1.day.avgtemp_c}
+                  sum={day1.day.condition.text}
+                ></WeeksDetail>;
+        })}
+                    {/* way2
+                    {data&&data.forecast.forecastday.map((day, id) => (
                       <WeeksDetail
                         key={id}
                         date={day.date}
@@ -103,7 +113,12 @@ handleChange = event => {
                         temp={day.day.avgtemp_c}
                         sum={day.day.condition.text}
                       />
-                    ))}
+                    ))} */}
+
+
+
+
+        
         </Buttompart>
         
 
