@@ -1,17 +1,17 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 import { getDayOfWeek } from "../utilities";
 
-class WeeksDetail extends React.Component{
+class WeeksDetail extends React.Component {
   constructor(props) {
     super();
     console.log("props:" + props.date);
   }
-  render(){
+  render() {
     const day = getDayOfWeek(this.props.date);
 
-    return(
-         <Containerweather>
+    return (
+      <Containerweather>
         <div>
           <h3>{day}</h3>
         </div>
@@ -24,18 +24,15 @@ class WeeksDetail extends React.Component{
         <div>
           <p>{this.props.sum}</p>
         </div>
-        </Containerweather>
-      
+      </Containerweather>
     );
   }
 }
 
 export default WeeksDetail;
 
-
 const Containerweather = styled.div`
   display: flex;
-  flex:1;
+  flex: 1;
   flex-direction: column;
-
 `;

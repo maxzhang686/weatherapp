@@ -1,180 +1,123 @@
-import React from 'react';
-import Button from '@material-ui/core/Button';
-import styled from 'styled-components';
-import axios from "axios";
-import WeeksDetail from './WeeksDetail';
-import CityDetail from './CityDetail';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import WeeksDetail from "./WeeksDetail";
+import CityDetail from "./CityDetail";
 
+const APIXU =
+  "http://api.weatherstack.com/current?access_key=96c64b5837e59f09ae6d8d56f134fc63&query=";
 
-const API = 'https://api.apixu.com/v1/forecast.json?key=dd644d7e780742f8af1111744192707&q=';
-class Dashboard extends React.Component{
-  constructor(){
-    super()
-    this.state = {
-      city: 'Sydney',
-      isLoading: false
-    };
-  }
+const API = `http://api.openweathermap.org/data/2.5/weather?id=6619279&APPID=2d8913a5d45c3cca163e0800b1431113`;
 
-  fetchData =async() => {
-  console.log("fetching");
-    fetch( API+this.state.city+"&days=5")
-      .then(respons => {respons.json()
-        .then(data=> {this.setState({data});console.log(data)
-        })
+const Dashboard = () => {
+  const [weatherData, setWeatherData] = useState([]);
+  const [city, setCity] = useState("Sydney");
+
+  const getWeatherData = APIXU => {
+    return fetch(`${APIXU}+${city}`, {
+      method: "GET"
+    })
+      .then(response => {
+        return response.json();
       })
-      .catch(err => console.log('err'))
+      .catch(err => console.log(err));
   };
- 
-  // fetchData =async() => {
-  //   await fetch(API+this.state.city)
-  //     .then(respons => respons.json())
-  //     .then(data=> this.setState(data))
-  //     // .then(data=>this.setState({current:data.current,location:data.location})
-  //     .catch(err => console.log('err'))
-  //     console.log(this.state.data)
-  //   };
 
- 
- componentDidMount() {
-    this.fetchData();
-}
+  const saveData = () => {
+    getWeatherData(APIXU).then(data => {
+      setWeatherData(data);
+    });
+  };
 
+  const handleChange = name => event => {
+    setCity(event.target.value);
+    console.log(city);
+  };
 
-handleChange = event => {
-  //important！setState is async,must use call back
-  this.setState({ city: event.target.value }, () => {
-    this.fetchData();
-  });
+  useEffect(() => saveData(), [city]);
+  return (
+    <Container>
+      <Containerweather>
+        <Left>
+          {weatherData && weatherData.current && (
+            <div>
+              <CityDetail
+                data1={weatherData}
+                temp={weatherData.current.temperature}
+                humidity={weatherData.current.humidity}
+                wind={weatherData.current.wind_speed}
+                condition={weatherData.current.weather_descriptions[0]}
+              />
+            </div>
+          )}
+        </Left>
+
+        <Right>
+          <div>
+            {" "}
+            <strong>
+              <h1> "Sydney"</h1>
+            </strong>
+          </div>
+          <div>
+            <select
+              className="form-control"
+              id="city"
+              name="city"
+              value={city}
+              onChange={handleChange()}
+            >
+              <option id="6619279" value="Sydney">
+                Sydney
+              </option>
+              <option value="Tokyo">Tokyo</option>
+              <option value="Beijing">Beijing</option>
+            </select>
+          </div>
+        </Right>
+      </Containerweather>
+    </Container>
+  );
 };
-
-  render(){
-    const data = this.state.data;
-    // // const forecast = this.state.forecast;
-    // // const current = this.state.current;
-    // // console.log("rendering" + forecast);
-    // console.log("rendering" + data);
-
-    return(
-      
-        <Container>
-          
-          <Containerweather>
-            <Left>
-              {data &&data.current && (
-                    <CityDetail
-                      temp={data.current.temp_c}
-                      humidity={data.current.humidity}
-                      wind={data.current.wind_mph}
-                      condition={data.current.condition.text}
-                    />
-                  )}
-            </Left>
-
-            <Right>
-                  <div>
-                    {" "}
-                    <strong><h1> {this.state.city}</h1></strong>
-                  </div>
-                  <div>
-                    <select
-                      className="form-control"
-                      id="city"
-                      name="city"
-                      value={this.state.city}
-                      onChange={this.handleChange}
-                    >
-                      <option value="Sydney">Sydney</option>
-                      <option value="Tokyo">Tokyo</option>
-                      <option value="Beijing">Beijing</option>
-                    </select>
-                  </div>
-            
-            </Right>
-          </Containerweather>
-          
-        <Buttompart>
-        
-        {data&&data.forecast.forecastday.map((day1,id) => {
-          return <WeeksDetail
-                  key={id}
-                  date={day1.date}
-                  icon={day1.day.condition.icon} 
-                  temp={day1.day.avgtemp_c}
-                  sum={day1.day.condition.text}
-                ></WeeksDetail>;
-        })}
-                    {/* way2
-                    {data&&data.forecast.forecastday.map((day, id) => (
-                      <WeeksDetail
-                        key={id}
-                        date={day.date}
-                        icon={day.day.condition.icon}
-                        temp={day.day.avgtemp_c}
-                        sum={day.day.condition.text}
-                      />
-                    ))} */}
-
-
-
-
-        
-        </Buttompart>
-        
-
-       
-
-
-        <Button variant="contained" color="primary">
-        Hello World
-        </Button>
-        </Container>
-      
-    );
-  }
-}
 
 export default Dashboard;
 
 const Container = styled.div`
-width:100%;
-height:100%;
-display: flex;
-text-align: center;
-flex-direction: column;
-align-items:stretch;
-max-width:1200px;
-max-height:800px;
-min-width:410px;
-margin:0 auto;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  text-align: center;
+  flex-direction: column;
+  align-items: stretch;
+  max-width: 1200px;
+  max-height: 800px;
+  min-width: 410px;
+  margin: 0 auto;
 `;
 
 const Containerweather = styled.div`
-display:flex;
-flex: 6;
-flex-direction: row ;
-flex-wrap: wrap;
-justify-content:center;
-align-items:center;
-background-color:#ffffffbf;
-margin: 100px 50px 0 50px;
+  display: flex;
+  flex: 6;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffffbf;
+  margin: 100px 50px 0 50px;
 `;
 
 const Left = styled.div`
-flex:1;
+  flex: 1;
 `;
 
 const Right = styled.div`
-flex:1;
+  flex: 1;
 `;
 
-
 const Buttompart = styled.div`
-flex: 5;
-display: flex;
-flex-direction: row;
-background-color:#ffffffbf;
-margin:  1px 50px 50px 50px;
-justify-content: center;
-
+  flex: 5;
+  display: flex;
+  flex-direction: row;
+  background-color: #ffffffbf;
+  margin: 1px 50px 50px 50px;
+  justify-content: center;
 `;
