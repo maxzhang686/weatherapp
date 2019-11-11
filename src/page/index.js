@@ -55,7 +55,7 @@ const Dashboard = () => {
           <div>
             {" "}
             <strong>
-              <h1> "Sydney"</h1>
+              <h1>{city}</h1>
             </strong>
           </div>
           <div>
