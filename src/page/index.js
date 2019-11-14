@@ -58,7 +58,6 @@ const Dashboard = () => {
   useEffect(() => saveData(), [cityId]);
   return (
     <Container>
-      <div>Hello World</div>
       <Containerweather>
         <Left>
           {weatherData && weatherData.currently && (
@@ -153,6 +152,7 @@ const Containerweather = styled.div`
   align-items: center;
   background-color: #ffffffbf;
   margin: 100px 50px 0 50px;
+  min-width: 640px;
 `;
 
 const Left = styled.div`
@@ -170,4 +170,5 @@ const Buttompart = styled.div`
   background-color: #ffffffbf;
   margin: 1px 50px 50px 50px;
   justify-content: center;
+  min-width: 640px;
 `;

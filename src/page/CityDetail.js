@@ -44,7 +44,7 @@ class CityDetail extends React.Component {
             <h5>{this.props.humidity}%</h5>
           </div>
           <div>
-            <h1>|</h1>
+            <Line></Line>
           </div>
           <div>
             <h5>WIND</h5>
@@ -83,9 +83,14 @@ const TempContainer = styled.div`
 `;
 const OtherContainer = styled.div`
   display: flex;
-
   flex-direction: row;
   justify-content: space-around;
   align-items: flex-start;
   width: 60%;
+`;
+
+const Line = styled.div`
+  float: left;
+  border-left: solid 2px;
+  height: 90px;
 `;
