@@ -5,7 +5,7 @@ class CityDetail extends React.Component {
   constructor(props) {
     super();
     this.state = {};
-    console.log(props.data1);
+    //console.log(props.data1);
   }
 
   // componentDidMount(){

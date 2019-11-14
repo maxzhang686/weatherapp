@@ -3,49 +3,72 @@ import styled from "styled-components";
 import WeeksDetail from "./WeeksDetail";
 import CityDetail from "./CityDetail";
 
-const APIXU =
-  "http://api.weatherstack.com/current?access_key=96c64b5837e59f09ae6d8d56f134fc63&query=";
+const proxyurl = "https://cors-anywhere.herokuapp.com/";
 
-const API = `http://api.openweathermap.org/data/2.5/weather?id=6619279&APPID=2d8913a5d45c3cca163e0800b1431113`;
+const API = `https://api.darksky.net/forecast/c3ed55bedc8f402d7fcfd7078fb8f5a4/-33.8688,151.2093?units=si`;
 
 const Dashboard = () => {
   const [weatherData, setWeatherData] = useState([]);
-  const [city, setCity] = useState("Sydney");
+  //const [forecastData, setForecastData] = useState([]);
+  const [cityId, setCityId] = useState("-33.8688,151.2093");
 
-  const getWeatherData = APIXU => {
-    return fetch(`${APIXU}+${city}`, {
-      method: "GET"
-    })
+  const saveData = () => {
+    getWeatherData(cityId).then(data => {
+      setWeatherData(data);
+
+      console.log(data);
+    });
+
+    // getForecasData(cityId).then(dataf => {
+    //   setForecastData(dataf);
+    //   console.log(dataf);
+    // });
+  };
+  const getWeatherData = cityId => {
+    return fetch(
+      `${proxyurl}https://api.darksky.net/forecast/c3ed55bedc8f402d7fcfd7078fb8f5a4/${cityId}?units=si`,
+      {
+        method: "GET"
+      }
+    )
       .then(response => {
         return response.json();
       })
       .catch(err => console.log(err));
   };
 
-  const saveData = () => {
-    getWeatherData(APIXU).then(data => {
-      setWeatherData(data);
-    });
-  };
+  // const getForecasData = cityId => {
+  //   return fetch(
+  //     `https://api.openweathermap.org/data/2.5/forecast?id=${cityId}&APPID=2d8913a5d45c3cca163e0800b1431113&units=metric`,
+  //     {
+  //       method: "GET"
+  //     }
+  //   )
+  //     .then(response => {
+  //       return response.json();
+  //     })
+  //     .catch(err => console.log(err));
+  // };
 
   const handleChange = name => event => {
-    setCity(event.target.value);
-    console.log(city);
+    setCityId(event.target.value);
+    console.log(cityId);
   };
 
-  useEffect(() => saveData(), [city]);
+  useEffect(() => saveData(), [cityId]);
   return (
     <Container>
+      <div>Hello World</div>
       <Containerweather>
         <Left>
-          {weatherData && weatherData.current && (
+          {weatherData && weatherData.currently && (
             <div>
               <CityDetail
                 data1={weatherData}
-                temp={weatherData.current.temperature}
-                humidity={weatherData.current.humidity}
-                wind={weatherData.current.wind_speed}
-                condition={weatherData.current.weather_descriptions[0]}
+                temp={weatherData.currently.temperature}
+                humidity={weatherData.currently.humidity}
+                wind={weatherData.currently.windSpeed}
+                condition={weatherData.currently.summary}
               />
             </div>
           )}
@@ -55,7 +78,7 @@ const Dashboard = () => {
           <div>
             {" "}
             <strong>
-              <h1>{city}</h1>
+              <h1>{weatherData.timezone}</h1>
             </strong>
           </div>
           <div>
@@ -63,18 +86,45 @@ const Dashboard = () => {
               className="form-control"
               id="city"
               name="city"
-              value={city}
+              value={cityId}
               onChange={handleChange()}
             >
-              <option id="6619279" value="Sydney">
-                Sydney
-              </option>
-              <option value="Tokyo">Tokyo</option>
-              <option value="Beijing">Beijing</option>
+              <option value="-33.8688,151.2093">Sydney</option>
+              <option value="35.6762,139.6503">Tokyo</option>
+              <option value="48.8566,2.3522">Paris</option>
+              <option value="39.9042,116.4074">Shanghai</option>
             </select>
           </div>
         </Right>
       </Containerweather>
+
+      <Buttompart>
+        {weatherData &&
+          weatherData.daily &&
+          weatherData.daily.data.map((day, i) => {
+            if (i !== 0) {
+              return (
+                <WeeksDetail
+                  key={i}
+                  date={day.time}
+                  icon={day.icon}
+                  tempmin={day.temperatureLow}
+                  tempmax={day.temperatureHigh}
+                  sum={day.summary}
+                ></WeeksDetail>
+              );
+            }
+          })}
+      </Buttompart>
+
+      {/* <WeeksDetail
+          key={1}
+            date={weatherData.daily.data[0].time}
+            icon={weatherData.daily.data[0].icon}
+            tempmin={weatherData.daily.data[0].temperatureLow}
+            tempmax={weatherData.daily.data[0].temperatureHigh}
+            sum={weatherData.daily.data[0].summary}
+          ></WeeksDetail>  */}
     </Container>
   );
 };
